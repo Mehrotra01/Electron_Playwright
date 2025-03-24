@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Form Page</title>
+</head>
+<body>
+  <h1>Form Page</h1>
+  <div id="box">
+
+    <form id="dataForm">
+      <label for="zipCode">Zip Code:</label>
+      <input type="text" id="zipCode" required />
+      
+      <label for="effectiveDate">Effective Date:</label>
+      <input type="date" id="effectiveDate" required />
+      
+      <label for="expirationDate">Expiration Date:</label>
+      <input type="date" id="expirationDate" required />
+      
+      <label for="state">State:</label>
+      <input type="text" id="state" required />
+      
+      <label for="environment">Environment:</label>
+      <select id="environment" required>
+        <option value="dev">Development</option>
+        <option value="prod">Production</option>
+        <option value="test">Testing</option>
+        <option value="mo">MO</option>
+      </select>
+      
+      <button type="submit">Submit</button>
+    </form>
+    <div>
+      <p>Here we got the response from the playwright script</p>
+      <p id="response"></p>
+    </div>
+  </div>
+
+  <script>
+    if (window.electronAPI) {
+      document.getElementById('dataForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = {
+          zipCode: document.getElementById('zipCode').value,
+          effectiveDate: document.getElementById('effectiveDate').value,
+          expirationDate: document.getElementById('expirationDate').value,
+          state: document.getElementById('state').value,
+          environment: document.getElementById('environment').value,
+        };
+        window.electronAPI.runPlaywright(formData);
+      });
+
+      window.electronAPI.onPlaywrightResponse((message) => {
+        document.getElementById('response').innerText = message;
+      });
+    } else {
+      console.error('electronAPI is not available. Check preload.js or main.js.');
+    }
+  </script>
+</body>
+</html>
